@@ -130,7 +130,7 @@ on:
     - cron: '0 6 * * 1'     # Todos los lunes a las 06:00 UTC
   workflow_dispatch:
     inputs:
-      entorno:
+      environment:            # Nombre libre del input; se lee con ${{ inputs.environment }}
         description: 'Entorno de despliegue'
         required: true
         default: 'staging'
