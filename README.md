@@ -365,6 +365,98 @@ steps:
 
 `secrets.GITHUB_TOKEN` es un token **automático** que GitHub genera en cada ejecución para interactuar con el repositorio.
 
+### Permissions
+
+En cada ejecución GitHub genera automáticamente un token llamado **`GITHUB_TOKEN`**, que las actions usan para interactuar con la API del repositorio (clonar código, comentar en PRs, crear releases...).
+
+La clave `permissions` define **qué puede hacer ese token**.
+
+```yaml
+permissions:
+  contents: read      # El token solo puede LEER el código
+```
+
+**¿Por qué limitarlo?** Por el principio de **mínimo privilegio**: si una action de terceros fuera maliciosa o tuviera una vulnerabilidad, solo podría hacer lo que el token permita.
+
+Valores posibles: `read`, `write` o `none`.
+
+| Permiso         | Para qué sirve                                                   |
+| --------------- | ---------------------------------------------------------------- |
+| `contents`      | Leer o escribir código, tags y releases.                         |
+| `pull-requests` | Comentar o etiquetar Pull Requests.                              |
+| `issues`        | Crear o editar issues.                                           |
+| `packages`      | Publicar en GitHub Packages.                                     |
+| `id-token`      | Autenticarse en AWS/GCP/Azure sin guardar claves (OIDC).         |
+| `actions`       | Gestionar ejecuciones de workflows.                              |
+
+> 💡 En cuanto declaras `permissions`, **todo lo que no listes queda en `none`**.
+
+Se puede declarar a nivel de **workflow** y sobrescribir **por job**, para dar más permisos solo donde se necesitan:
+
+```yaml
+permissions:
+  contents: read          # Por defecto, todo el workflow solo lee
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write     # Solo este job puede crear releases
+    steps:
+      - run: echo "Creando release..."
+```
+
+### Concurrency
+
+Controla **cuántas ejecuciones de un mismo grupo pueden correr al mismo tiempo**.
+
+```yaml
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+```
+
+| Clave                | Descripción                                                                                   |
+| -------------------- | --------------------------------------------------------------------------------------------- |
+| `group`              | Nombre del grupo. Dos ejecuciones con el mismo nombre **no corren en paralelo**.              |
+| `cancel-in-progress` | Si es `true`, una nueva ejecución **cancela** la que estaba corriendo en el mismo grupo.     |
+
+En el ejemplo, el grupo se construye con:
+
+- `github.workflow` → nombre del workflow (ej. `CI/CD`).
+- `github.ref` → rama o PR (ej. `refs/heads/main`, `refs/pull/42/merge`).
+
+Resultado: `CI/CD-refs/heads/main`, es decir, **un grupo por workflow y por rama**. Un push a `feature-x` no cancela lo que corre en `main`.
+
+**Ejemplo práctico:** haces 3 pushes seguidos a tu PR en 1 minuto.
+
+| Sin `concurrency`                              | Con `concurrency` + `cancel-in-progress: true`   |
+| ---------------------------------------------- | ------------------------------------------------ |
+| Corren las 3 ejecuciones completas.            | Se cancelan la 1.ª y la 2.ª; solo termina la 3.ª. |
+| Se gastan minutos probando commits viejos.     | Solo se prueba el último commit.                 |
+
+#### `cancel-in-progress: false` (valor por defecto)
+
+La nueva ejecución **espera en cola** a que termine la anterior. Es lo ideal para **despliegues**: no quieres cortar un deploy a la mitad, pero tampoco que corran dos a la vez.
+
+```yaml
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: production
+      cancel-in-progress: false   # Los deploys se ejecutan uno detrás de otro
+    steps:
+      - run: echo "Desplegando..."
+```
+
+> ⚠️ Solo puede haber **una** ejecución pendiente por grupo. Si llega una tercera mientras otra espera, la que estaba esperando se cancela.
+
+**En resumen:**
+
+- `permissions` → **seguridad**: qué puede hacer el workflow con tu repositorio.
+- `concurrency` → **control de ejecución**: cuántas ejecuciones corren a la vez (ahorra minutos y evita choques).
+
 ### Contexts y expresiones
 
 Las expresiones `${{ ... }}` permiten acceder a información de la ejecución:
