@@ -11,6 +11,8 @@ on:
         required: true
         default: 'Edwin'
         type: string
+permissions: {}
+
 jobs:
   adult:
     if: ${{ inputs.age >= 18 }}

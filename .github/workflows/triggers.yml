@@ -29,6 +29,9 @@ on:
         type: string
   schedule:
     - cron:  '15 22 * * *'
+permissions:
+  contents: read
+
 jobs:
   hello-world-manual:
     if: ${{ github.event_name == 'workflow_dispatch' }}

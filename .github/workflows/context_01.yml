@@ -2,6 +2,8 @@ name: Context
 run-name: I'm learning to use contexts!
 on: [push]
 
+permissions: {}
+
 jobs:
   basic-info:
     runs-on: ubuntu-latest

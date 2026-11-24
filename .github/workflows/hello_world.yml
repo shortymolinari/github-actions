@@ -1,6 +1,9 @@
 name: Learning GitHub Actions
 run-name: I'm learning GitHub Actions!
 on: [push]
+permissions:
+  contents: read
+
 jobs:
   hello-world:
     runs-on: ubuntu-latest
