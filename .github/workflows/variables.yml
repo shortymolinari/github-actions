@@ -1,0 +1,15 @@
+name: Greeting using variables
+run-name: I'm learning to use variables!
+on: workflow_dispatch
+env:
+  DAY_OF_WEEK: Monday
+jobs:
+  greeting-variables:
+    runs-on: ubuntu-latest
+    env:
+      GREETING: Hello
+    steps:
+      - name: Greet
+        env:
+          NAME: Edwin
+        run: echo "$GREETING, $NAME. Today is $DAY_OF_WEEK!"

@@ -21,6 +21,7 @@ jobs:
     if: ${{ github.ref != 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
-      - env:
+      - name: Show branch name
+        env:
           BRANCH: ${{ github.ref_name }}
         run: echo "This is not the main branch, it is $BRANCH"
