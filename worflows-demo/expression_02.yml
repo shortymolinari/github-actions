@@ -1,0 +1,62 @@
+name: triggers practice
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+  issue_comment:
+    types: [created]
+
+jobs:
+  pr_commented:
+    name: PR comment
+    if: ${{ github.event_name == 'issue_comment' && github.event.issue.pull_request }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "A comment on PR $NUMBER"
+        env:
+          NUMBER: ${{ github.event.issue.number }}
+
+  show-secrets:
+    name: Show secrets
+    if: ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check secret presence
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+        run: |
+          if [ -z "$API_KEY" ]; then
+            echo ":x: The API_KEY secret does not exist"
+          else
+            echo ":white_check_mark: The API_KEY secret is present"
+          fi
+
+  notify-slack:
+    name: Send Slack notification
+    if: ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check SLACK_WEBHOOK_URL
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          if [ -z "$SLACK_WEBHOOK_URL" ]; then
+            echo ":x: The SLACK_WEBHOOK_URL secret does not exist"
+            exit 1
+          fi
+      - name: Send Slack Notification
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          # Message formatted for Slack
+          MESSAGE=$(printf ':tada: *New PR opened/updated by* *%s*\n>*#%s* - %s\n%s' \
+            "$AUTHOR" "$PR_NUMBER" "$PR_TITLE" "$PR_URL")
+          # jq escapes special characters so the JSON is always valid
+          jq -n --arg text "$MESSAGE" '{text: $text}' |
+            curl --fail -sS -X POST -H 'Content-type: application/json' \
+              --data @- "$SLACK_WEBHOOK_URL"
