@@ -459,21 +459,131 @@ jobs:
 
 ### Contexts y expresiones
 
-Las expresiones `${{ ... }}` permiten acceder a información de la ejecución:
+Un **context** (contexto) es un **objeto con información** sobre la ejecución: qué evento la disparó, quién la lanzó, qué inputs recibió, qué secretos hay, etc.
 
-| Context     | Contiene                                                       |
-| ----------- | -------------------------------------------------------------- |
-| `github`    | Info del evento, repo, rama, actor (`github.ref`, `github.sha`)|
-| `env`       | Variables de entorno.                                          |
-| `secrets`   | Secretos.                                                      |
-| `vars`      | Variables de configuración.                                    |
-| `matrix`    | Valores de la matriz actual.                                   |
-| `needs`     | Outputs y resultados de jobs previos.                          |
-| `steps`     | Outputs de steps anteriores (por `id`).                        |
-| `runner`    | Info del runner (`runner.os`).                                 |
-| `inputs`    | Entradas de `workflow_dispatch` / `workflow_call`.             |
+Una **expresión** `${{ ... }}` permite leer esa información, compararla o usar funciones con ella. La forma general es `${{ contexto.propiedad }}`:
 
-Funciones de estado útiles en `if`: `success()`, `failure()`, `always()`, `cancelled()`.
+```text
+${{ github.actor }}
+    │      └── propiedad: el usuario asociado a la ejecución
+    └── contexto
+```
+
+Si la propiedad puede tener guiones o es dinámica, también se puede usar `${{ github['actor'] }}`.
+
+#### Lista de contextos
+
+| Context     | Contiene                                                       | Ejemplo                              |
+| ----------- | -------------------------------------------------------------- | ------------------------------------ |
+| `github`    | Info del evento, repo, rama, actor.                            | `${{ github.ref }}`                  |
+| `env`       | Variables de entorno definidas en el workflow, job o step.     | `${{ env.APP_ENV }}`                 |
+| `secrets`   | Secretos.                                                      | `${{ secrets.API_KEY }}`             |
+| `vars`      | Variables de configuración.                                    | `${{ vars.REGION }}`                 |
+| `inputs`    | Entradas de `workflow_dispatch` / `workflow_call`.             | `${{ inputs.name }}`                 |
+| `matrix`    | Valores de la matriz actual.                                   | `${{ matrix.node }}`                 |
+| `strategy`  | Info de la matriz (índice, total de jobs).                     | `${{ strategy.job-index }}`          |
+| `needs`     | Outputs y resultados de jobs previos.                          | `${{ needs.build.result }}`          |
+| `steps`     | Outputs y resultados de steps anteriores (por `id`).           | `${{ steps.ver.outputs.version }}`   |
+| `job`       | Info del job actual.                                           | `${{ job.status }}`                  |
+| `runner`    | Info del runner.                                               | `${{ runner.os }}`                   |
+| `jobs`      | Outputs de los jobs. Solo en workflows reutilizables.          | `${{ jobs.build.outputs.version }}`  |
+
+#### Propiedades más usadas de `github`
+
+| Propiedad             | Qué devuelve                                             | Ejemplo de valor             |
+| --------------------- | -------------------------------------------------------- | ---------------------------- |
+| `github.event_name`   | Nombre del evento que disparó el workflow.               | `push`, `schedule`           |
+| `github.actor`        | Usuario asociado a la ejecución.                         | `octocat`                    |
+| `github.repository`   | Dueño y nombre del repositorio.                          | `octocat/hello-world`        |
+| `github.ref`          | Referencia completa de la rama, tag o PR.                | `refs/heads/main`            |
+| `github.ref_name`     | Nombre corto de la rama o tag.                           | `main`                       |
+| `github.sha`          | Commit que disparó el workflow.                          | `1250101...`                 |
+| `github.workflow`     | Nombre del workflow.                                     | `Triggers`                   |
+| `github.run_number`   | Número de ejecución del workflow.                        | `15`                         |
+| `github.event`        | Datos completos del evento. **Cambian según el evento.** | `github.event.issue.number`  |
+
+Por ejemplo, `github.event.pull_request.title` existe en `pull_request`, pero no en `push`.
+
+#### Ejemplo: contextos usados en este repositorio
+
+```yaml
+# triggers.yml: decide qué job corre según el evento
+if: ${{ github.event_name == 'workflow_dispatch' }}
+
+# triggers.yml: lee un valor del formulario manual
+env:
+  INPUT_NAME: ${{ inputs.name }}
+```
+
+#### Contexto `env` o variable de shell
+
+Son dos formas de leer el mismo valor, en momentos distintos:
+
+```yaml
+env:
+  APP_ENV: production
+steps:
+  - run: echo "${{ env.APP_ENV }}"   # GitHub lo reemplaza ANTES de ejecutar el script
+  - run: echo "$APP_ENV"             # El shell lo lee MIENTRAS ejecuta el script
+```
+
+Dentro de `run` es preferible `$APP_ENV`. El contexto `env` sirve donde no hay shell, como en el `if` de un step o en `with`.
+
+#### Dónde se puede usar cada contexto
+
+No todos los contextos están disponibles en todas partes:
+
+| Lugar                             | Contextos disponibles                                              |
+| --------------------------------- | ------------------------------------------------------------------ |
+| `run-name`, `concurrency` (workflow) | `github`, `inputs`, `vars`                                      |
+| `env` del workflow                | `github`, `secrets`, `inputs`, `vars`                              |
+| `if` de un **job**                | `github`, `needs`, `vars`, `inputs`                                |
+| `runs-on`                         | `github`, `needs`, `strategy`, `matrix`, `vars`, `inputs`          |
+| `env` de un job                   | Los de `runs-on` más `secrets`                                     |
+| `if` de un **step**               | Todos, menos `secrets` y `jobs`                                    |
+| `run`, `with` y `env` de un step  | Todos, menos `jobs`                                                |
+
+Para condicionar un step según un secreto, se pasa primero a `env` a nivel de job:
+
+```yaml
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    env:
+      API_KEY: ${{ secrets.API_KEY }}
+    steps:
+      - if: ${{ env.API_KEY != '' }}
+        run: echo "El secreto existe"
+```
+
+#### Errores comunes
+
+- **Propiedad inexistente:** no da error. Se muestra vacía y, al compararla con un número, vale `0`. Si el input se llama `age` y escribes `inputs.edad`, entonces `inputs.edad < 18` siempre es verdadero.
+- **Comillas en las expresiones:** los textos van con comillas **simples**: `github.ref == 'refs/heads/main'`.
+- **Inyección de comandos:** no pongas datos que escriben otras personas (títulos de PR, comentarios, inputs) directamente en `run`. Pásalos por `env`:
+
+```yaml
+# Inseguro
+- run: echo "${{ github.event.pull_request.title }}"
+
+# Seguro
+- env:
+    TITLE: ${{ github.event.pull_request.title }}
+  run: echo "$TITLE"
+```
+
+#### Ver el contenido de un contexto
+
+```yaml
+- name: Mostrar el contexto github
+  env:
+    CONTEXT: ${{ toJSON(github) }}
+  run: echo "$CONTEXT"
+```
+
+#### Funciones de estado
+
+Útiles en `if`: `success()`, `failure()`, `always()`, `cancelled()`.
 
 ```yaml
 - name: Notificar fallo
