@@ -1,0 +1,26 @@
+name: Context
+run-name: I'm learning to use contexts!
+on: [push]
+
+jobs:
+  basic-info:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show repo info
+        env:
+          REPOSITORY: ${{ github.repository }}
+          BRANCH: ${{ github.ref_name }}
+          EVENT: ${{ github.event_name }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          echo "Repository: $REPOSITORY"
+          echo "Branch: $BRANCH"
+          echo "Event: $EVENT"
+          echo "Actor: $ACTOR"
+  not-main:
+    if: ${{ github.ref != 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          BRANCH: ${{ github.ref_name }}
+        run: echo "This is not the main branch, it is $BRANCH"
