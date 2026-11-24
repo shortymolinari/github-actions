@@ -1,0 +1,30 @@
+name: Expression
+on:
+  workflow_dispatch:
+    inputs:
+      age:
+        description: 'Age'
+        required: true
+        type: number
+      name:
+        description: 'Your name'
+        required: true
+        default: 'Edwin'
+        type: string
+jobs:
+  adult:
+    if: ${{ inputs.age >= 18 }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run script...
+        env:
+          NAME: ${{ inputs.name }}
+        run: echo "$NAME is an adult"
+  minor:
+    if: ${{ inputs.age < 18 }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run script...
+        env:
+          NAME: ${{ inputs.name }}
+        run: echo "$NAME is a minor"

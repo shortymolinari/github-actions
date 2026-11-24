@@ -45,7 +45,7 @@ Evento (push, pull_request, schedule...)
 Workflow  (.github/workflows/ci.yml)
    │
    ├── Job "build"  ──► se ejecuta en un Runner (ubuntu-latest)
-   │      ├── Step 1: actions/checkout@v4      (usa una Action)
+   │      ├── Step 1: actions/checkout@v7      (usa una Action)
    │      ├── Step 2: npm install              (ejecuta un comando)
    │      └── Step 3: npm test
    │
@@ -204,7 +204,7 @@ jobs:
         os: [ubuntu-latest, windows-latest]
         node: [18, 20, 22]
     steps:
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node }}
 ```
@@ -224,11 +224,11 @@ Un **step** es una tarea individual dentro de un job. Se ejecutan **en orden sec
 steps:
   # Usar una action
   - name: Descargar el código
-    uses: actions/checkout@v4
+    uses: actions/checkout@v7
 
   # Usar una action con parámetros
   - name: Configurar Node
-    uses: actions/setup-node@v4
+    uses: actions/setup-node@v7
     with:
       node-version: 20
 
@@ -271,7 +271,7 @@ uses: <owner>/<repo>@<versión>
 
 | Formato                          | Ejemplo                                   |
 | -------------------------------- | ----------------------------------------- |
-| Action pública con tag           | `actions/checkout@v4`                     |
+| Action pública con tag           | `actions/checkout@v7`                     |
 | Fijada a un commit (más segura)  | `actions/checkout@<sha-completo>`         |
 | Action local del repo            | `./.github/actions/mi-action`             |
 | Imagen Docker                    | `docker://alpine:3.20`                    |
@@ -506,7 +506,7 @@ jobs:
 - **Cache:** reutiliza dependencias (`node_modules`, `~/.m2`...) entre ejecuciones para acelerar.
 
 ```yaml
-- uses: actions/upload-artifact@v4
+- uses: actions/upload-artifact@v7
   with:
     name: build
     path: dist/
@@ -557,10 +557,10 @@ jobs:
         node: [20, 22]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node }}
           cache: npm
@@ -575,13 +575,13 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
       - run: npm ci && npm run build
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: dist
           path: dist/
@@ -592,7 +592,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: dist
       - name: Desplegar
