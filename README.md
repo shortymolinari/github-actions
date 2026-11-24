@@ -75,16 +75,16 @@ jobs:                    # Lista de jobs
       - run: echo "Hola GitHub Actions"
 ```
 
-| Clave        | Descripción                                                        |
-| ------------ | ------------------------------------------------------------------ |
-| `name`       | Nombre del workflow (opcional).                                    |
-| `run-name`   | Nombre dinámico de cada ejecución (opcional).                      |
-| `on`         | Evento(s) que disparan el workflow. **Obligatorio.**               |
-| `env`        | Variables de entorno disponibles para todos los jobs.              |
-| `permissions`| Permisos del `GITHUB_TOKEN` (lectura/escritura).                   |
-| `concurrency`| Evita ejecuciones simultáneas del mismo grupo.                     |
-| `defaults`   | Valores por defecto (por ejemplo `shell` o `working-directory`).  |
-| `jobs`       | Los trabajos a ejecutar. **Obligatorio.**                          |
+| Clave         | Descripción                                                      |
+| ------------- | ---------------------------------------------------------------- |
+| `name`        | Nombre del workflow (opcional).                                  |
+| `run-name`    | Nombre dinámico de cada ejecución (opcional).                    |
+| `on`          | Evento(s) que disparan el workflow. **Obligatorio.**             |
+| `env`         | Variables de entorno disponibles para todos los jobs.            |
+| `permissions` | Permisos del `GITHUB_TOKEN` (lectura/escritura).                 |
+| `concurrency` | Evita ejecuciones simultáneas del mismo grupo.                   |
+| `defaults`    | Valores por defecto (por ejemplo `shell` o `working-directory`). |
+| `jobs`        | Los trabajos a ejecutar. **Obligatorio.**                        |
 
 ---
 
@@ -94,18 +94,18 @@ Un **evento** es una actividad específica que **dispara** un workflow. Se confi
 
 #### Eventos más comunes
 
-| Evento                | Se dispara cuando...                                              |
-| --------------------- | ----------------------------------------------------------------- |
-| `push`                | Se hace push a una rama o tag.                                    |
-| `pull_request`        | Se abre, actualiza o cierra un Pull Request.                      |
-| `workflow_dispatch`   | Se lanza **manualmente** desde la UI, la CLI o la API.            |
-| `schedule`            | En horarios programados con sintaxis **cron** (en UTC).           |
-| `release`             | Se publica, crea o edita un release.                              |
-| `issues`              | Se abre, edita, cierra o etiqueta un issue.                       |
-| `issue_comment`       | Se comenta en un issue o PR.                                      |
-| `workflow_call`       | Otro workflow lo invoca (workflows **reutilizables**).            |
-| `workflow_run`        | Termina otro workflow.                                            |
-| `repository_dispatch` | Un sistema externo lo dispara vía API.                            |
+| Evento                | Se dispara cuando...                                    |
+| --------------------- | ------------------------------------------------------- |
+| `push`                | Se hace push a una rama o tag.                          |
+| `pull_request`        | Se abre, actualiza o cierra un Pull Request.            |
+| `workflow_dispatch`   | Se lanza **manualmente** desde la UI, la CLI o la API.  |
+| `schedule`            | En horarios programados con sintaxis **cron** (en UTC). |
+| `release`             | Se publica, crea o edita un release.                    |
+| `issues`              | Se abre, edita, cierra o etiqueta un issue.             |
+| `issue_comment`       | Se comenta en un issue o PR.                            |
+| `workflow_call`       | Otro workflow lo invoca (workflows **reutilizables**).  |
+| `workflow_run`        | Termina otro workflow.                                  |
+| `repository_dispatch` | Un sistema externo lo dispara vía API.                  |
 
 #### Formas de declararlos
 
@@ -174,21 +174,21 @@ jobs:
 
 #### Opciones de un job
 
-| Clave               | Descripción                                                            |
-| ------------------- | ---------------------------------------------------------------------- |
-| `runs-on`           | Runner donde se ejecuta. **Obligatorio.**                              |
-| `needs`             | Jobs de los que depende.                                               |
-| `if`                | Condición para ejecutar el job.                                        |
-| `steps`             | Lista de pasos.                                                        |
-| `env`               | Variables de entorno del job.                                          |
-| `strategy.matrix`   | Ejecuta el job con múltiples combinaciones (versiones, SO...).         |
-| `timeout-minutes`   | Tiempo máximo de ejecución (por defecto 360).                          |
-| `continue-on-error` | Permite que el workflow siga aunque el job falle.                      |
-| `environment`       | Entorno de despliegue (con reglas de protección y secretos propios).   |
-| `outputs`           | Valores que el job expone a otros jobs.                                |
-| `container`         | Ejecuta los steps dentro de un contenedor Docker.                      |
-| `services`          | Contenedores auxiliares (ej. base de datos para tests).                |
-| `uses`              | Llama a un **workflow reutilizable** en lugar de definir steps.        |
+| Clave               | Descripción                                                          |
+| ------------------- | -------------------------------------------------------------------- |
+| `runs-on`           | Runner donde se ejecuta. **Obligatorio.**                            |
+| `needs`             | Jobs de los que depende.                                             |
+| `if`                | Condición para ejecutar el job.                                      |
+| `steps`             | Lista de pasos.                                                      |
+| `env`               | Variables de entorno del job.                                        |
+| `strategy.matrix`   | Ejecuta el job con múltiples combinaciones (versiones, SO...).       |
+| `timeout-minutes`   | Tiempo máximo de ejecución (por defecto 360).                        |
+| `continue-on-error` | Permite que el workflow siga aunque el job falle.                    |
+| `environment`       | Entorno de despliegue (con reglas de protección y secretos propios). |
+| `outputs`           | Valores que el job expone a otros jobs.                              |
+| `container`         | Ejecuta los steps dentro de un contenedor Docker.                    |
+| `services`          | Contenedores auxiliares (ej. base de datos para tests).              |
+| `uses`              | Llama a un **workflow reutilizable** en lugar de definir steps.      |
 
 #### Matrix (matriz)
 
@@ -245,19 +245,19 @@ steps:
 
 #### Opciones de un step
 
-| Clave               | Descripción                                                  |
-| ------------------- | ------------------------------------------------------------ |
-| `name`              | Nombre visible del paso.                                     |
-| `id`                | Identificador para referenciar sus outputs.                  |
-| `uses`              | Action a utilizar.                                           |
-| `run`               | Comando(s) a ejecutar.                                       |
-| `with`              | Parámetros de entrada para la action.                        |
-| `env`               | Variables de entorno del paso.                               |
-| `if`                | Condición para ejecutar el paso.                             |
-| `shell`             | Shell a usar (`bash`, `pwsh`, `python`...).                  |
-| `working-directory` | Directorio donde se ejecuta `run`.                           |
-| `continue-on-error` | Si falla, el job continúa.                                   |
-| `timeout-minutes`   | Tiempo máximo del paso.                                      |
+| Clave               | Descripción                                 |
+| ------------------- | ------------------------------------------- |
+| `name`              | Nombre visible del paso.                    |
+| `id`                | Identificador para referenciar sus outputs. |
+| `uses`              | Action a utilizar.                          |
+| `run`               | Comando(s) a ejecutar.                      |
+| `with`              | Parámetros de entrada para la action.       |
+| `env`               | Variables de entorno del paso.              |
+| `if`                | Condición para ejecutar el paso.            |
+| `shell`             | Shell a usar (`bash`, `pwsh`, `python`...). |
+| `working-directory` | Directorio donde se ejecuta `run`.          |
+| `continue-on-error` | Si falla, el job continúa.                  |
+| `timeout-minutes`   | Tiempo máximo del paso.                     |
 
 ---
 
@@ -269,12 +269,12 @@ Una **action** es una aplicación **reutilizable** que realiza una tarea común 
 uses: <owner>/<repo>@<versión>
 ```
 
-| Formato                          | Ejemplo                                   |
-| -------------------------------- | ----------------------------------------- |
-| Action pública con tag           | `actions/checkout@v7`                     |
-| Fijada a un commit (más segura)  | `actions/checkout@<sha-completo>`         |
-| Action local del repo            | `./.github/actions/mi-action`             |
-| Imagen Docker                    | `docker://alpine:3.20`                    |
+| Formato                         | Ejemplo                           |
+| ------------------------------- | --------------------------------- |
+| Action pública con tag          | `actions/checkout@v7`             |
+| Fijada a un commit (más segura) | `actions/checkout@<sha-completo>` |
+| Action local del repo           | `./.github/actions/mi-action`     |
+| Imagen Docker                   | `docker://alpine:3.20`            |
 
 #### Tipos de actions que puedes crear
 
@@ -284,14 +284,14 @@ uses: <owner>/<repo>@<versión>
 
 #### Actions oficiales muy usadas
 
-| Action                         | Para qué sirve                              |
-| ------------------------------ | ------------------------------------------- |
-| `actions/checkout`             | Clona el repositorio en el runner.          |
-| `actions/setup-node`           | Instala Node.js.                            |
-| `actions/setup-python`         | Instala Python.                             |
-| `actions/cache`                | Cachea dependencias entre ejecuciones.      |
-| `actions/upload-artifact`      | Guarda archivos generados por un job.       |
-| `actions/download-artifact`    | Recupera archivos de otro job.              |
+| Action                      | Para qué sirve                         |
+| --------------------------- | -------------------------------------- |
+| `actions/checkout`          | Clona el repositorio en el runner.     |
+| `actions/setup-node`        | Instala Node.js.                       |
+| `actions/setup-python`      | Instala Python.                        |
+| `actions/cache`             | Cachea dependencias entre ejecuciones. |
+| `actions/upload-artifact`   | Guarda archivos generados por un job.  |
+| `actions/download-artifact` | Recupera archivos de otro job.         |
 
 ---
 
@@ -303,11 +303,11 @@ Un **runner** es el **servidor (máquina)** que ejecuta los jobs. Cada job se ej
 
 Máquinas virtuales gestionadas por GitHub. Se crean limpias para cada job y se destruyen al terminar.
 
-| Etiqueta `runs-on`  | Sistema operativo          |
-| ------------------- | -------------------------- |
-| `ubuntu-latest`     | Linux (Ubuntu)             |
-| `windows-latest`    | Windows Server             |
-| `macos-latest`      | macOS                      |
+| Etiqueta `runs-on` | Sistema operativo |
+| ------------------ | ----------------- |
+| `ubuntu-latest`    | Linux (Ubuntu)    |
+| `windows-latest`   | Windows Server    |
+| `macos-latest`     | macOS             |
 
 También hay versiones específicas (`ubuntu-24.04`, `windows-2022`...) y **larger runners** con más CPU/RAM (de pago).
 
@@ -319,13 +319,13 @@ Máquinas **propias** (servidor, VM, Raspberry Pi, cluster...) donde instalas el
 runs-on: [self-hosted, linux, x64]
 ```
 
-| Característica    | GitHub-hosted                 | Self-hosted                          |
-| ----------------- | ----------------------------- | ------------------------------------ |
-| Mantenimiento     | Lo hace GitHub                | Lo haces tú                          |
-| Entorno           | Limpio en cada job            | Persistente (hay que limpiarlo)      |
-| Coste             | Minutos incluidos según plan  | Gratis en GitHub, pagas tu hardware  |
-| Personalización   | Limitada                      | Total (hardware, software, red)      |
-| Acceso a red interna | No                         | Sí                                   |
+| Característica       | GitHub-hosted                | Self-hosted                         |
+| -------------------- | ---------------------------- | ----------------------------------- |
+| Mantenimiento        | Lo hace GitHub               | Lo haces tú                         |
+| Entorno              | Limpio en cada job           | Persistente (hay que limpiarlo)     |
+| Coste                | Minutos incluidos según plan | Gratis en GitHub, pagas tu hardware |
+| Personalización      | Limitada                     | Total (hardware, software, red)     |
+| Acceso a red interna | No                           | Sí                                  |
 
 > ⚠️ **Seguridad:** no uses self-hosted runners en repositorios **públicos**, porque cualquier PR podría ejecutar código en tu máquina.
 
@@ -380,14 +380,14 @@ permissions:
 
 Valores posibles: `read`, `write` o `none`.
 
-| Permiso         | Para qué sirve                                                   |
-| --------------- | ---------------------------------------------------------------- |
-| `contents`      | Leer o escribir código, tags y releases.                         |
-| `pull-requests` | Comentar o etiquetar Pull Requests.                              |
-| `issues`        | Crear o editar issues.                                           |
-| `packages`      | Publicar en GitHub Packages.                                     |
-| `id-token`      | Autenticarse en AWS/GCP/Azure sin guardar claves (OIDC).         |
-| `actions`       | Gestionar ejecuciones de workflows.                              |
+| Permiso         | Para qué sirve                                           |
+| --------------- | -------------------------------------------------------- |
+| `contents`      | Leer o escribir código, tags y releases.                 |
+| `pull-requests` | Comentar o etiquetar Pull Requests.                      |
+| `issues`        | Crear o editar issues.                                   |
+| `packages`      | Publicar en GitHub Packages.                             |
+| `id-token`      | Autenticarse en AWS/GCP/Azure sin guardar claves (OIDC). |
+| `actions`       | Gestionar ejecuciones de workflows.                      |
 
 > 💡 En cuanto declaras `permissions`, **todo lo que no listes queda en `none`**.
 
@@ -416,10 +416,10 @@ concurrency:
   cancel-in-progress: true
 ```
 
-| Clave                | Descripción                                                                                   |
-| -------------------- | --------------------------------------------------------------------------------------------- |
-| `group`              | Nombre del grupo. Dos ejecuciones con el mismo nombre **no corren en paralelo**.              |
-| `cancel-in-progress` | Si es `true`, una nueva ejecución **cancela** la que estaba corriendo en el mismo grupo.     |
+| Clave                | Descripción                                                                              |
+| -------------------- | ---------------------------------------------------------------------------------------- |
+| `group`              | Nombre del grupo. Dos ejecuciones con el mismo nombre **no corren en paralelo**.         |
+| `cancel-in-progress` | Si es `true`, una nueva ejecución **cancela** la que estaba corriendo en el mismo grupo. |
 
 En el ejemplo, el grupo se construye con:
 
@@ -430,10 +430,10 @@ Resultado: `CI/CD-refs/heads/main`, es decir, **un grupo por workflow y por rama
 
 **Ejemplo práctico:** haces 3 pushes seguidos a tu PR en 1 minuto.
 
-| Sin `concurrency`                              | Con `concurrency` + `cancel-in-progress: true`   |
-| ---------------------------------------------- | ------------------------------------------------ |
-| Corren las 3 ejecuciones completas.            | Se cancelan la 1.ª y la 2.ª; solo termina la 3.ª. |
-| Se gastan minutos probando commits viejos.     | Solo se prueba el último commit.                 |
+| Sin `concurrency`                          | Con `concurrency` + `cancel-in-progress: true`    |
+| ------------------------------------------ | ------------------------------------------------- |
+| Corren las 3 ejecuciones completas.        | Se cancelan la 1.ª y la 2.ª; solo termina la 3.ª. |
+| Se gastan minutos probando commits viejos. | Solo se prueba el último commit.                  |
 
 #### `cancel-in-progress: false` (valor por defecto)
 
@@ -473,34 +473,34 @@ Si la propiedad puede tener guiones o es dinámica, también se puede usar `${{ 
 
 #### Lista de contextos
 
-| Context     | Contiene                                                       | Ejemplo                              |
-| ----------- | -------------------------------------------------------------- | ------------------------------------ |
-| `github`    | Info del evento, repo, rama, actor.                            | `${{ github.ref }}`                  |
-| `env`       | Variables de entorno definidas en el workflow, job o step.     | `${{ env.APP_ENV }}`                 |
-| `secrets`   | Secretos.                                                      | `${{ secrets.API_KEY }}`             |
-| `vars`      | Variables de configuración.                                    | `${{ vars.REGION }}`                 |
-| `inputs`    | Entradas de `workflow_dispatch` / `workflow_call`.             | `${{ inputs.name }}`                 |
-| `matrix`    | Valores de la matriz actual.                                   | `${{ matrix.node }}`                 |
-| `strategy`  | Info de la matriz (índice, total de jobs).                     | `${{ strategy.job-index }}`          |
-| `needs`     | Outputs y resultados de jobs previos.                          | `${{ needs.build.result }}`          |
-| `steps`     | Outputs y resultados de steps anteriores (por `id`).           | `${{ steps.ver.outputs.version }}`   |
-| `job`       | Info del job actual.                                           | `${{ job.status }}`                  |
-| `runner`    | Info del runner.                                               | `${{ runner.os }}`                   |
-| `jobs`      | Outputs de los jobs. Solo en workflows reutilizables.          | `${{ jobs.build.outputs.version }}`  |
+| Context    | Contiene                                                   | Ejemplo                             |
+| ---------- | ---------------------------------------------------------- | ----------------------------------- |
+| `github`   | Info del evento, repo, rama, actor.                        | `${{ github.ref }}`                 |
+| `env`      | Variables de entorno definidas en el workflow, job o step. | `${{ env.APP_ENV }}`                |
+| `secrets`  | Secretos.                                                  | `${{ secrets.API_KEY }}`            |
+| `vars`     | Variables de configuración.                                | `${{ vars.REGION }}`                |
+| `inputs`   | Entradas de `workflow_dispatch` / `workflow_call`.         | `${{ inputs.name }}`                |
+| `matrix`   | Valores de la matriz actual.                               | `${{ matrix.node }}`                |
+| `strategy` | Info de la matriz (índice, total de jobs).                 | `${{ strategy.job-index }}`         |
+| `needs`    | Outputs y resultados de jobs previos.                      | `${{ needs.build.result }}`         |
+| `steps`    | Outputs y resultados de steps anteriores (por `id`).       | `${{ steps.ver.outputs.version }}`  |
+| `job`      | Info del job actual.                                       | `${{ job.status }}`                 |
+| `runner`   | Info del runner.                                           | `${{ runner.os }}`                  |
+| `jobs`     | Outputs de los jobs. Solo en workflows reutilizables.      | `${{ jobs.build.outputs.version }}` |
 
 #### Propiedades más usadas de `github`
 
-| Propiedad             | Qué devuelve                                             | Ejemplo de valor             |
-| --------------------- | -------------------------------------------------------- | ---------------------------- |
-| `github.event_name`   | Nombre del evento que disparó el workflow.               | `push`, `schedule`           |
-| `github.actor`        | Usuario asociado a la ejecución.                         | `octocat`                    |
-| `github.repository`   | Dueño y nombre del repositorio.                          | `octocat/hello-world`        |
-| `github.ref`          | Referencia completa de la rama, tag o PR.                | `refs/heads/main`            |
-| `github.ref_name`     | Nombre corto de la rama o tag.                           | `main`                       |
-| `github.sha`          | Commit que disparó el workflow.                          | `1250101...`                 |
-| `github.workflow`     | Nombre del workflow.                                     | `Triggers`                   |
-| `github.run_number`   | Número de ejecución del workflow.                        | `15`                         |
-| `github.event`        | Datos completos del evento. **Cambian según el evento.** | `github.event.issue.number`  |
+| Propiedad           | Qué devuelve                                             | Ejemplo de valor            |
+| ------------------- | -------------------------------------------------------- | --------------------------- |
+| `github.event_name` | Nombre del evento que disparó el workflow.               | `push`, `schedule`          |
+| `github.actor`      | Usuario asociado a la ejecución.                         | `octocat`                   |
+| `github.repository` | Dueño y nombre del repositorio.                          | `octocat/hello-world`       |
+| `github.ref`        | Referencia completa de la rama, tag o PR.                | `refs/heads/main`           |
+| `github.ref_name`   | Nombre corto de la rama o tag.                           | `main`                      |
+| `github.sha`        | Commit que disparó el workflow.                          | `1250101...`                |
+| `github.workflow`   | Nombre del workflow.                                     | `Triggers`                  |
+| `github.run_number` | Número de ejecución del workflow.                        | `15`                        |
+| `github.event`      | Datos completos del evento. **Cambian según el evento.** | `github.event.issue.number` |
 
 Por ejemplo, `github.event.pull_request.title` existe en `pull_request`, pero no en `push`.
 
@@ -533,15 +533,15 @@ Dentro de `run` es preferible `$APP_ENV`. El contexto `env` sirve donde no hay s
 
 No todos los contextos están disponibles en todas partes:
 
-| Lugar                             | Contextos disponibles                                              |
-| --------------------------------- | ------------------------------------------------------------------ |
-| `run-name`, `concurrency` (workflow) | `github`, `inputs`, `vars`                                      |
-| `env` del workflow                | `github`, `secrets`, `inputs`, `vars`                              |
-| `if` de un **job**                | `github`, `needs`, `vars`, `inputs`                                |
-| `runs-on`                         | `github`, `needs`, `strategy`, `matrix`, `vars`, `inputs`          |
-| `env` de un job                   | Los de `runs-on` más `secrets`                                     |
-| `if` de un **step**               | Todos, menos `secrets` y `jobs`                                    |
-| `run`, `with` y `env` de un step  | Todos, menos `jobs`                                                |
+| Lugar                                | Contextos disponibles                                     |
+| ------------------------------------ | --------------------------------------------------------- |
+| `run-name`, `concurrency` (workflow) | `github`, `inputs`, `vars`                                |
+| `env` del workflow                   | `github`, `secrets`, `inputs`, `vars`                     |
+| `if` de un **job**                   | `github`, `needs`, `vars`, `inputs`                       |
+| `runs-on`                            | `github`, `needs`, `strategy`, `matrix`, `vars`, `inputs` |
+| `env` de un job                      | Los de `runs-on` más `secrets`                            |
+| `if` de un **step**                  | Todos, menos `secrets` y `jobs`                           |
+| `run`, `with` y `env` de un step     | Todos, menos `jobs`                                       |
 
 Para condicionar un step según un secreto, se pasa primero a `env` a nivel de job:
 
@@ -722,8 +722,8 @@ jobs:
 
 ## Glosario rápido
 
-| Término      | Definición corta                                                     |
-| ------------ | -------------------------------------------------------------------- |
+| Término      | Definición corta                                                    |
+| ------------ | ------------------------------------------------------------------- |
 | **Workflow** | Archivo YAML con un proceso automatizado completo.                  |
 | **Event**    | Lo que dispara el workflow (`push`, `pull_request`, `schedule`...). |
 | **Job**      | Grupo de steps que corre en un mismo runner.                        |
